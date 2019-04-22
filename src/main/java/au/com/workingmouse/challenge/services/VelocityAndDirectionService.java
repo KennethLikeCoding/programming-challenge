@@ -15,9 +15,10 @@ public class VelocityAndDirectionService {
         String[] parts = line.split(",");
 
         VelocityAndDirectionData velocityAndDirectionData = new VelocityAndDirectionData();
-       
-        velocityAndDirectionData.setTimestamp(Timestamp.valueOf(parts[0].replace("/", "-")));
-        
+       try {
+        velocityAndDirectionData.setTimestamp(Timestamp.valueOf(parts[0]));
+       } catch(Exception e) {
+       }
         velocityAndDirectionData.setRecord(Integer.parseInt(parts[1]));
         velocityAndDirectionData.setDcsModel(Integer.parseInt(parts[2]));
         velocityAndDirectionData.setDcsSerial(Integer.parseInt(parts[3]));
