@@ -14,7 +14,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class VelocityAndDirectionServiceTest {
-    private static final String VALID_LINE = "2019-02-15 10:40:00,94780,420,720,15.36746,208.9371,-13.4357,-7.070466,"
+	private static final String HEADER = "TIMESTAMP RECORD DCS_Model DCS_Serial DCS_ABSSpd_Avg DCS_Direction_Avg DCS_NorthCur_Avg DCS_EastCur_Avg DCS_Heading_Avg DCS_TiltX_Avg DCS_TiltY_Avg DCS_SPstd_Avg DCS_SigStrength_Avg DCS_PingCnt_Avg DCS_AbsTilt_Avg DCS_MaxTilt_Avg DCS_StdTilt_Avg";
+	
+	private static final String VALID_LINE = "2019-02-15 10:40:00,94780,420,720,15.36746,208.9371,-13.4357,-7.070466,"
         + "223.5234,13.6896,-6.570364,5.081869,-39.14706,100,15.29624,16.54015,0.9127843";
 
     private static final String VALID_LINE2 = "2019-02-15 10:40:00,47390,210,360,7.68373,104.46855,-6.71785,-3.535233,"
@@ -86,7 +88,7 @@ class VelocityAndDirectionServiceTest {
     @Test
     void parseInvalidLineTestTimeStamp() {
        Executable parseLineTest = () -> VelocityAndDirectionService.parseLine(INVALID_LINE);
-        assertThrows(IllegalArgumentException.class, parseLineTest, "Invalid Timestamp");
+       assertThrows(IllegalArgumentException.class, parseLineTest, "Invalid Timestamp");
     }
 
 
@@ -99,11 +101,10 @@ class VelocityAndDirectionServiceTest {
     @Test
     void parseMultipleLinesTest() {
        var lines = VelocityAndDirectionService.parseLines(Arrays.asList(
+    		    HEADER,
                 VALID_LINE,
                 VALID_LINE
         ));
-
-       System.out.println(lines.toString());
 
        assertEquals(2, lines.size());
        assertTrue(lines.get(0).equals(lines.get(1)));
@@ -121,5 +122,43 @@ class VelocityAndDirectionServiceTest {
 
         assertEquals(VelocityAndDirectionService.summarise(dataToSummarise),
                 VelocityAndDirectionService.summarise(actualDataToSummarise));
+    }
+    
+    @Test
+    void testAvgSingleLine() {
+    	VelocityAndDirectionData actualVelocityAndDirectionData = VelocityAndDirectionService.parseLine(VALID_LINE);
+    	List<VelocityAndDirectionData> dataToSummarise = new ArrayList<>();
+        List<VelocityAndDirectionData> actualDataToSummarise = new ArrayList<>();
+        dataToSummarise.add(velocityAndDirectionData);
+        actualDataToSummarise.add(actualVelocityAndDirectionData);
+        double[] a = VelocityAndDirectionService.findAvg(dataToSummarise);
+        double[] b = VelocityAndDirectionService.findAvg(actualDataToSummarise);
+        assertEquals(a.length, b.length);
+        for (int i = 0; i < a.length; i++) {
+        	assertEquals(a[i], b[i]);
+        }
+    }
+    
+    @Test
+    void testDoubleLines() {
+    	VelocityAndDirectionData velocityAndDirectionData2 = VelocityAndDirectionService.parseLine(VALID_LINE2);
+    	List<VelocityAndDirectionData> dataToSummarise = new ArrayList<>();
+        dataToSummarise.add(velocityAndDirectionData);
+        dataToSummarise.add(velocityAndDirectionData2);
+        
+        double[] a = VelocityAndDirectionService.findAvg(dataToSummarise);
+        assertEquals(a.length, 16);
+    }
+    
+    @Test
+    void testMultipleLines() {
+    	VelocityAndDirectionData velocityAndDirectionData2 = VelocityAndDirectionService.parseLine(VALID_LINE2);
+    	VelocityAndDirectionData velocityAndDirectionData3 = VelocityAndDirectionService.parseLine(VALID_LINE3);
+    	List<VelocityAndDirectionData> dataToSummarise = new ArrayList<>();
+        dataToSummarise.add(velocityAndDirectionData);
+        dataToSummarise.add(velocityAndDirectionData2);
+        dataToSummarise.add(velocityAndDirectionData3);
+        double[] a = VelocityAndDirectionService.findAvg(dataToSummarise);
+        assertEquals(a.length, 16);
     }
 }

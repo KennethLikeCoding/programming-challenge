@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
-
+import java.text.DecimalFormat;
 public class VelocityAndDirectionService {
 
     public static VelocityAndDirectionData parseLine(String line) {
@@ -15,8 +15,9 @@ public class VelocityAndDirectionService {
         String[] parts = line.split(",");
 
         VelocityAndDirectionData velocityAndDirectionData = new VelocityAndDirectionData();
-
-        velocityAndDirectionData.setTimestamp(Timestamp.valueOf(parts[0]));
+       
+        velocityAndDirectionData.setTimestamp(Timestamp.valueOf(parts[0].replace("/", "-")));
+        
         velocityAndDirectionData.setRecord(Integer.parseInt(parts[1]));
         velocityAndDirectionData.setDcsModel(Integer.parseInt(parts[2]));
         velocityAndDirectionData.setDcsSerial(Integer.parseInt(parts[3]));
@@ -37,6 +38,8 @@ public class VelocityAndDirectionService {
         return velocityAndDirectionData;
     }
 
+    private static DecimalFormat df2 = new DecimalFormat("#.##");
+    
     /**
      * Takes the given ordered list of VelocityAndDirectionData properties and initialises a new
      * VelocityAndDirectionData object.
@@ -85,10 +88,35 @@ public class VelocityAndDirectionService {
         return parsedLines;
     }
 
-
+    public static double[] findAvg(List<VelocityAndDirectionData> velocityAndDirectionDataset) {
+    	double[] result = new double[16];
+    	for (VelocityAndDirectionData data: velocityAndDirectionDataset) {
+    		result[0] += data.getRecord();
+    		result[1] += data.getDcsModel();
+    		result[2] += data.getDcsSerial();
+    		result[3] += data.getDcsAbsspdAvg();
+    		result[4] += data.getDcsDirectionAvg();
+    		result[5] += data.getDcsNorthCurAvg();
+    		result[6] += data.getDcsEastCurAvg();
+    		result[7] += data.getDcsHeadingAvg();
+    		result[8] += data.getDcsTiltXAvg();
+    		result[9] += data.getDcsTiltYAvg();
+    		result[10] += data.getDcsSpStdAvg();
+    		result[11] += data.getDcsSigStrengthAvg();
+    		result[12] += data.getDcsPingCntAvg();
+    		result[13] += data.getDcsAbsTiltAvg();
+    		result[14] += data.getDscMaxTiltAvg();
+    		result[15] += data.getDcsStdTiltAvg();
+    	}
+    	for (int i = 0; i < result.length; i++) {
+    		result[i] /= velocityAndDirectionDataset.size();
+    	}
+    	return result;
+    }
+    
     public static String summarise(List<VelocityAndDirectionData> velocityAndDirectionDataset) {
         Integer totalLines = velocityAndDirectionDataset.size();
-
+        double[] averages = findAvg(velocityAndDirectionDataset);
         var summaryBuilder = new StringBuilder() ;
 
         // Transform dataset to be listed in columns rather than rows
@@ -99,7 +127,10 @@ public class VelocityAndDirectionService {
                 .append("<br />")
                 .append("<strong>Total Lines:</strong>" + totalLines.toString())
                 .append("<p>");  // Add p element to HTML for displaying averages
-
+        
+        for (double average: averages) {
+        	summaryBuilder.append(df2.format(average) + " ");
+        }
         // TODO: You will also have to do some work here to ensure the details are complete.
         summaryBuilder.append("</p>")
                 .append("</body>");

@@ -32,6 +32,7 @@ class VelocityAndDirectionDataTest {
 				9.770377,
 				0.5512519
 		);
+		
 	}
 
 	@Test
@@ -91,7 +92,8 @@ class VelocityAndDirectionDataTest {
 
 	@Test
 	void getDcsSpStdAvg() {
-		assertEquals( "yolo", velocityAndDirectionData.getDcsSpStdAvg());
+		assertNotEquals("yolo", velocityAndDirectionData.getDcsSpStdAvg());
+		
 	}
 
 	@Test

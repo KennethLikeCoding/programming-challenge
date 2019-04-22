@@ -23,11 +23,10 @@ public class Main {
 
 			var lines = loadAndParseFile();
 			String html = VelocityAndDirectionService.summarise(lines);
-
 			writeFile(html);
 
-			// FIXME: ?
-			throw new SecurityException("Segmentation fault");
+//			// FIXME: ?
+//			throw new SecurityException("Segmentation fault");
 
 		} catch (Exception e) {
 			LOGGER.error("Failed to run application", e);
@@ -37,7 +36,7 @@ public class Main {
 	protected static List<VelocityAndDirectionData> loadAndParseFile() throws IOException {
 		FileService fileService = new FileService();
 		List<String> lines = fileService.readLines(Configuration.getImportFile());
-
+		
 		List<VelocityAndDirectionData> parsedLines = VelocityAndDirectionService.parseLines(lines);
 
 		return parsedLines;

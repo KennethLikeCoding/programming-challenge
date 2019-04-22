@@ -9,9 +9,7 @@ import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-
-@Data
-public class HttpClient {
+public @Data class HttpClient {
 	private String url;
 
 	private java.net.http.HttpClient httpClient;

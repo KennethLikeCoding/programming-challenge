@@ -16,14 +16,17 @@ public class Configuration {
     @Getter
     private static File importFile;
 
+    public static File getImportFile() {
+    	load();
+    	return importFile;
+    }
+    
     public static void load() {
-
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
         URL propertyFileUrl = classLoader.getResource(CONFIG_FILE);
 
         Properties properties = new Properties();
         InputStream input = null;
-
         try {
             input = propertyFileUrl.openStream();
 
@@ -31,6 +34,7 @@ public class Configuration {
             properties.load(input);
 
             importFile = new File(classLoader.getResource(properties.getProperty("csv.file.path")).getFile());
+            System.out.println(importFile);
 
         } catch (IOException e) {
             LOGGER.error("Failed to load properties", e);

@@ -1,47 +1,31 @@
 package au.com.workingmouse.challenge.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.EqualsAndHashCode;
 import java.sql.Timestamp;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@RequiredArgsConstructor
+@EqualsAndHashCode
 public class VelocityAndDirectionData {
 
-    private Timestamp timestamp;
+    private @NonNull Timestamp timestamp;
 
-    private Integer record;
+    private @NonNull Integer record, dcsModel, dcsSerial;
+    
+    private @NonNull Double dcsAbsspdAvg, dcsDirectionAvg, dcsNorthCurAvg, dcsEastCurAvg, dcsHeadingAvg, 
 
-    private Integer dcsModel;
+    				dcsTiltXAvg,dcsTiltYAvg,dcsSpStdAvg,dcsSigStrengthAvg,dcsPingCntAvg,dcsAbsTiltAvg,
+    		
+    				dscMaxTiltAvg,dcsStdTiltAvg;
+   
 
-    private Integer dcsSerial;
-
-    private Double dcsAbsspdAvg;
-
-    private Double dcsDirectionAvg;
-
-    private Double dcsNorthCurAvg;
-
-    private Double dcsEastCurAvg;
-
-    private Double dcsHeadingAvg;
-
-    private Double dcsTiltXAvg;
-
-    private Double dcsTiltYAvg;
-
-    private Double dcsSpStdAvg;
-
-    private Double dcsSigStrengthAvg;
-
-    private Double dcsPingCntAvg;
-
-    private Double dcsAbsTiltAvg;
-
-    private Double dscMaxTiltAvg;
-
-    private Double dcsStdTiltAvg;
 }
+
